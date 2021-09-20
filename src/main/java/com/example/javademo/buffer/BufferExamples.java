@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Random;
+import java.util.concurrent.Future;
 
 public class BufferExamples {
     @Test
@@ -25,6 +26,7 @@ public class BufferExamples {
             for (int j = 0; j < 5; j++) {
                 fout.write(97 + r.nextInt(5));
             }
+            fout.write(' ');
         }
         fout.close();
         System.out.println(System.currentTimeMillis() - start);
@@ -44,7 +46,16 @@ public class BufferExamples {
 
     @Test
     public void read_test_withBuffer() throws IOException {
+        String fileName = "word";
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileName));
+        long start = System.currentTimeMillis();
+        int b;
+        byte[] buf = new byte[4 * 1024];
+        while ((b = in.read(buf)) != -1) {
 
+        }
+        in.close();
+        System.out.println(System.currentTimeMillis() - start + "ms");
     }
 
     @Test
@@ -71,6 +82,17 @@ public class BufferExamples {
     public void test_async_read() throws Exception {
         String fileName = "word";
         AsynchronousFileChannel channel = AsynchronousFileChannel.open(Paths.get(fileName), StandardOpenOption.READ);
+        ByteBuffer bbuf = ByteBuffer.allocate(4 * 1024);
+        Future<Integer> operation = channel.write(bbuf, 0);
+        while (!operation.isDone());
+        bbuf.flip();
+        Integer integer = operation.get();
+    }
+
+    public void test_async_read_completion() throws IOException {
+        String fileName = "word";
+        AsynchronousFileChannel channel = AsynchronousFileChannel.open(Paths.get(fileName), StandardOpenOption.READ);
+
 
     }
 
