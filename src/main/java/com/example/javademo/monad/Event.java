@@ -1,4 +1,4 @@
-package com.example.javademo.monoid;
+package com.example.javademo.monad;
 
 import java.util.stream.Stream;
 
